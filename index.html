@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Placar de Vôlei — Painel</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="ctl">
+
+<header>
+  <h1>🏐 Placar de Vôlei</h1>
+  <div class="hdr">
+    <span id="status" class="pill">conectando…</span>
+    <label class="room">Sala <input id="roomInput"></label>
+    <button id="btnRoom">Trocar</button>
+    <button id="btnUndo">↶ Desfazer jogada</button>
+    <button id="btnCopy" class="accent">📋 Copiar URL do overlay</button>
+  </div>
+</header>
+
+<div id="cfgWarn" class="warn" hidden>
+  Firebase ainda não configurado. Edite <b>js/firebase.js</b> e cole os dados do seu projeto.
+</div>
+
+<main>
+<div class="col">
+
+  <!-- PARTIDA -->
+  <section class="card">
+    <h2>Partida <span id="setInfo" class="mut"></span></h2>
+    <div class="score-grid">
+      <div class="team-ctl" id="ctlA">
+        <div class="tname" id="nameA">TIME A</div>
+        <div class="big" id="ptsA">0</div>
+        <div class="btnrow">
+          <button class="btn-plus" data-d="A,1">+1</button>
+          <button class="btn-minus" data-d="A,-1">−1</button>
+        </div>
+        <div class="sets-line">Sets
+          <button data-s="A,-1">−</button><b id="setsA">0</b><button data-s="A,1">+</button>
+        </div>
+        <button class="serve-btn" id="srvA" data-serve="A">🏐 Sacando</button>
+      </div>
+      <div class="team-ctl" id="ctlB">
+        <div class="tname" id="nameB">TIME B</div>
+        <div class="big" id="ptsB">0</div>
+        <div class="btnrow">
+          <button class="btn-plus" data-d="B,1">+1</button>
+          <button class="btn-minus" data-d="B,-1">−1</button>
+        </div>
+        <div class="sets-line">Sets
+          <button data-s="B,-1">−</button><b id="setsB">0</b><button data-s="B,1">+</button>
+        </div>
+        <button class="serve-btn" id="srvB" data-serve="B">🏐 Sacando</button>
+      </div>
+    </div>
+    <div id="alert" class="alert" hidden></div>
+    <div class="btnrow wrap">
+      <button id="btnSwap">⇄ Trocar saque</button>
+      <button id="btnPrev">◀ Set anterior</button>
+      <button id="btnNext" class="accent">Próximo set ▶</button>
+      <button id="btnResetSet">Reiniciar set</button>
+      <button id="btnResetMatch" class="danger">Reiniciar partida</button>
+    </div>
+  </section>
+
+  <!-- EQUIPES -->
+  <section class="card">
+    <h2>Equipes</h2>
+    <div id="teamsCfg" class="two"></div>
+  </section>
+
+  <!-- PATROCINADORES -->
+  <section class="card">
+    <h2>Patrocinadores</h2>
+    <label class="chk"><input type="checkbox" data-path="sponsorBar/visible"> Exibir faixa de patrocinadores</label>
+    <input type="file" id="spFile" accept="image/*" multiple>
+    <div id="spList" class="sp-list"></div>
+    <label class="sl">Tamanho dos logos <input type="range" data-path="sponsorBar/size" min="30" max="160"><output></output></label>
+    <label class="sl">Espaço entre logos <input type="range" data-path="sponsorBar/gap" min="4" max="80"><output></output></label>
+    <h3>Conjuntos salvos</h3>
+    <div class="lib-row">
+      <input id="setName" placeholder="Nome do conjunto (ex.: Copa 2026)">
+      <button id="setSave">💾 Salvar atuais</button>
+    </div>
+    <div class="lib-row">
+      <select id="setSel"></select>
+      <button id="setLoad">Carregar</button>
+      <button id="setDel">🗑</button>
+    </div>
+  </section>
+
+  <!-- CAMPEONATO -->
+  <section class="card">
+    <h2>Logo do campeonato</h2>
+    <label class="chk"><input type="checkbox" data-path="champ/visible"> Exibir logo</label>
+    <div class="logo-row">
+      <div class="prev"><img id="champPrev" alt=""></div>
+      <div>
+        <input type="file" id="champFile" accept="image/*">
+        <button id="champClear">Remover logo</button>
+      </div>
+    </div>
+    <label class="sl">Tamanho <input type="range" data-path="champ/size" min="60" max="400"><output></output></label>
+  </section>
+
+  <!-- APARÊNCIA -->
+  <section class="card">
+    <h2>Aparência do placar</h2>
+    <label class="sl">Posição horizontal <input type="range" data-path="style/x" min="0" max="1700"><output></output></label>
+    <label class="sl">Posição vertical <input type="range" data-path="style/y" min="0" max="1000"><output></output></label>
+    <label class="sl">Tamanho geral (%) <input type="range" data-path="style/scale" min="40" max="250"><output></output></label>
+    <label class="sl">Altura das linhas <input type="range" data-path="style/rowH" min="36" max="120"><output></output></label>
+    <label class="sl">Tamanho dos escudos <input type="range" data-path="style/logo" min="20" max="100"><output></output></label>
+    <label class="sl">Tamanho dos nomes <input type="range" data-path="style/nameSize" min="14" max="60"><output></output></label>
+    <label class="sl">Tamanho dos números <input type="range" data-path="style/numSize" min="20" max="80"><output></output></label>
+    <label class="sl">Opacidade dos fundos (%) <input type="range" data-path="style/bgOpacity" min="10" max="100"><output></output></label>
+    <div class="two">
+      <label>Fundo dos sets <input type="color" data-path="style/setsBg"></label>
+      <label>Fundo da pontuação <input type="color" data-path="style/pointsBg"></label>
+    </div>
+    <label class="chk"><input type="checkbox" data-path="style/showSetBadge"> Mostrar indicador do set atual</label>
+    <button id="btnStyleReset">Restaurar visual padrão</button>
+  </section>
+
+</div>
+
+<aside class="col side">
+  <section class="card">
+    <h2>Prévia do overlay</h2>
+    <div class="preview"><iframe id="preview" title="prévia"></iframe></div>
+    <input id="urlBox" readonly>
+    <p class="mut small"><b>Atalhos:</b> Q = +1 time A · A = −1 time A · P = +1 time B · L = −1 time B · Ctrl+Z = desfazer</p>
+    <p class="mut small">Ao marcar um ponto, o saque passa para quem pontuou. Quando um time fecha o set, os sets são contados sozinhos; clique em "Próximo set" para continuar.</p>
+  </section>
+</aside>
+</main>
+
+<div id="toast"></div>
+
+<template id="tplTeam">
+  <div class="team-cfg" data-team="__T__">
+    <h3>Equipe __T__</h3>
+    <label>Nome <input data-path="teams/__T__/name" maxlength="24"></label>
+    <div class="two">
+      <label>Fundo do nome <input type="color" data-path="teams/__T__/bg"></label>
+      <label>Cor do texto <input type="color" data-path="teams/__T__/color"></label>
+    </div>
+    <div class="logo-row">
+      <div class="prev"><img class="f-prev" alt=""></div>
+      <div>
+        <input type="file" class="f-file" accept="image/*">
+        <div class="btnrow">
+          <button class="f-apply accent" disabled>Aplicar escudo</button>
+          <button class="f-clear">Remover</button>
+        </div>
+      </div>
+    </div>
+    <div class="lib-row">
+      <select class="f-lib"></select>
+      <button class="f-load">Carregar</button>
+      <button class="f-save">💾 Salvar</button>
+      <button class="f-del">🗑</button>
+    </div>
+  </div>
+</template>
+
+<script type="module" src="js/control.js"></script>
+</body>
+</html>
