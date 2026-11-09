@@ -9,8 +9,8 @@ html:has(.overlay-body){background:transparent}
 #board{position:absolute;transform-origin:0 0}
 .row{display:flex;align-items:stretch;height:var(--rowH);margin-bottom:3px;border-radius:8px;
   overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,.35)}
-.row .logo{width:calc(var(--rowH)*1.15);display:flex;align-items:center;justify-content:center}
-.row .logo img{width:var(--logo);height:var(--logo);object-fit:contain}
+.row .logo{width:calc(var(--rowH)*1.15);display:flex;align-items:center;justify-content:center;background:transparent}
+.row .logo img{width:var(--logo);height:var(--logo);object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.55))}
 .row .name{min-width:340px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;
   gap:16px;font-size:var(--nameSize);font-weight:800;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
 .row .sets,.row .pts{display:flex;align-items:center;justify-content:center;color:#fff;

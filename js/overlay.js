@@ -39,7 +39,6 @@ function render(s) {
     q(".name span").textContent = tm.name;
     q(".name").style.background = rgba(tm.bg, op);
     q(".name").style.color = tm.color;
-    q(".logo").style.background = rgba(st.setsBg, op);
     q(".sets").style.background = rgba(st.setsBg, op);
     q(".pts").style.background = rgba(st.pointsBg, op);
     setImg(q(".logo img"), tm.logo);
